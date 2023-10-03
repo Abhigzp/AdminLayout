@@ -1,75 +1,22 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./styles.css";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { useTable, usePagination } from "react-table";
+import {eventListData} from "../../../../Components/services/adminApi"
 
-// Sample data
 const data = [
   {
-    id: 1,
-    eventCategoryId: "Speaker",
-    eventCategoryName: "INR",
-    isPublished: 45,
-    showInOrder: "true",
-  },
-  {
-    id: 2,
-    eventCategoryId: "Speaker",
-    eventCategoryName: "INR",
-    isPublished: 45,
-    showInOrder: "true",
-  },
-  {
-    id: 3,
-    eventCategoryId: "Speaker",
-    eventCategoryName: "INR",
-    isPublished: 45,
-    showInOrder: "true",
-  },
-  {
-    id: 4,
-    eventCategoryId: "Speaker",
-    eventCategoryName: "INR",
-    isPublished: 45,
-    showInOrder: "true",
-  },
-  {
-    id: 5,
-    eventCategoryId: "Speaker",
-    eventCategoryName: "INR",
-    isPublished: 45,
-    showInOrder: "true",
-  },
-  {
-    id: 6,
-    eventCategoryId: "Speaker",
-    eventCategoryName: "INR",
-    isPublished: 45,
-    showInOrder: "true",
-  },
-  {
-    id: 7,
-    eventCategoryId: "Speaker",
-    eventCategoryName: "INR",
-    isPublished: 45,
-    showInOrder: "true",
-  },
-  {
-    id: 8,
-    eventCategoryId: "Speaker",
-    eventCategoryName: "INR",
-    isPublished: 45,
-    showInOrder: "true",
-  },
-
-  // Add more data here
+            _id: "",
+            eventCategoryName: "",
+            showInOrder: "",
+            isPublished: "",
+  }
 ];
 
 //columns
 const columns = [
-  { Header: "#", accessor: "id" },
-  { Header: "Event Category Id", accessor: "eventCategoryId" },
+  { Header: "Event Category Id", accessor: "_id" },
   { Header: "Event Category Name", accessor: "eventCategoryName" },
   { Header: "Is Published", accessor: "isPublished" },
   { Header: "Show in Order", accessor: "showInOrder" },
@@ -93,9 +40,21 @@ const handleAction = (id) => {
 
 const ListOfCategories = () => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [evenlistData,setEventListData] = useState("")
+  const fetchDataFromApi = async () => {
+    try {
+      const result = await eventListData('api/v1/EventCategory');
+      setEventListData(result.data)
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  };
+ useEffect(() => { 
+      fetchDataFromApi();
+    },[]);
 
   const exportToExcel = () => {
-    const wsData = data.map((item) => ({
+    const wsData = evenlistData.map((item) => ({
       ID: item.id,
       "Event Category Id": item.eventCategoryId,
       "Event Category Name": item.eventCategoryName,
@@ -131,7 +90,7 @@ const ListOfCategories = () => {
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
-
+const tableData=evenlistData?evenlistData:data;
   const {
     getTableProps,
     getTableBodyProps,
@@ -150,7 +109,7 @@ const ListOfCategories = () => {
   } = useTable(
     {
       columns,
-      data,
+      data:tableData,
       initialState: { pageIndex: 0, pageSize: 5 },
     },
     usePagination
@@ -167,7 +126,7 @@ const ListOfCategories = () => {
           <div className="form-row">
             <div className="form-col">
               <label htmlFor="currency">Category Name : </label>
-              <input type="text" />
+              <input type="text"   />
             </div>
           </div>
           <div className="form-row">

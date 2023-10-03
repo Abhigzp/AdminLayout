@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import "./styles.css";
 import { createCompanyData } from "../../../../Components/services/adminApi";
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const AddCompanyCategory = () => {
-  
+
   const [isExpanded, setIsExpanded] = useState(true);
   const [formData, setFormData] = useState({
     categoryName: "",
@@ -17,26 +18,87 @@ const AddCompanyCategory = () => {
   };
 
   
+  // const saveCompanyData = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await createCompanyData(
+  //       "api/v1/company-categories",
+  //       formData
+  //     );
+  //     console.log(response.message)
+  //     if (response.status === 200) {
+  //       setFormData({
+  //         categoryName: "",
+  //         seminarFee: "",
+  //         currency: "",
+  //         isPublished: "",
+  //       });
+  //       toast('Company category created successfully', {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "light",
+  //         });
+  //     }else{
+  //       toast('Company category already exit', {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "light",
+  //         });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating company data:", error);
+  //   }
+  // };
+
   const saveCompanyData = async (e) => {
     e.preventDefault();
     try {
-      const response = await createCompanyData(
-        "api/v1/company-categories",
-        formData
-      );
+      const response = await createCompanyData("api/v1/company-categories", formData);
+      console.log(response);
       if (response.status === 200) {
         setFormData({
           categoryName: "",
           seminarFee: "",
           currency: "",
-          isPublished: "",
+          isPublished: false,
         });
-      }
+        toast.success('Company category created successfully', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } 
     } catch (error) {
-      console.error("Error creating company data:", error);
+      console.error(error.message);
+      if(error.message==='Error creating company data:'){
+        toast.error('Company category already exists', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }  
     }
   };
-
   const InputHandle = (e) => {
     try {
       const { name, value, type, checked } = e.target;
@@ -113,6 +175,7 @@ const AddCompanyCategory = () => {
           </div>
         </form>
       )}
+      <ToastContainer />
     </div>
   );
 };

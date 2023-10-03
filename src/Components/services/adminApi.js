@@ -42,12 +42,12 @@ export const listOfCompanies = async (endPoint) => {
 };
 
 // login
-export const loginAdmin = async (endPoint) => {
+export const eventListData = async (endPoint) => {
   try {
     const response = await api.get(endPoint);
     return response.data;
   } catch (error) {
-    throw new Error('Error fetching data:', error);
+    throw new Error('Error to fetching eventListData data:', error);
   }
 };
 
